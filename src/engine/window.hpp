@@ -13,11 +13,12 @@ namespace engine
 
 		std::shared_ptr<GLFWwindow> get_window() const;
 		void run();
+		void change_size(int width, int height);
 
 	private:
-		void init(int width, int height, std::string title);
+		void init(std::string title);
 	private:
 		std::shared_ptr<GLFWwindow> _window;
-
+		int _width, _height;
 	};
 }
