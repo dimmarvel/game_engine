@@ -11,7 +11,7 @@ int main(int argc, char** argv)
 			spdlog::error("Can't init glfw");
 			return -1;
 		}
-		std::shared_ptr<engine::window> w = std::make_shared<engine::window>(800, 600, "Opengl");
+		std::shared_ptr<engine::window> w = std::make_shared<engine::window>(1280, 1080, "Opengl");
 		w->run();
 	}
 	catch(const std::exception& e)

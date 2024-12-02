@@ -20,5 +20,6 @@ namespace engine
 	private:
 		std::shared_ptr<GLFWwindow> _window;
 		int _width, _height;
+		bool _is_disable_resize = true; // TODO: window settings
 	};
 }
