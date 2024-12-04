@@ -18,10 +18,29 @@ namespace engine
 
 	window::~window()
 	{
+		spdlog::info("Close window");
+		_context.clear();
 		if(_window)
 		{
 			glfwTerminate();
 		}
+	}
+
+	window_context::~window_context()
+	{
+		spdlog::info("Destroy window context");
+	}
+	void window_context::clear()
+	{
+		spdlog::info("Clear window context");
+		triangles.clear();
+	}
+
+	window_context create_context(std::vector<triangle> triangles)
+	{
+		window_context ctx;
+		ctx.triangles = triangles;
+		return ctx;
 	}
 
 	void window::init(std::string title)
@@ -45,7 +64,6 @@ namespace engine
 			spdlog::error("Can't init glfw");
 			throw std::runtime_error("Failed to create GLFW window");
 		}
-
 		glfwMakeContextCurrent(_window.get());
 		glfwSetFramebufferSizeCallback(_window.get(), framebuffer_size_callback);
 
@@ -55,6 +73,10 @@ namespace engine
 		}
 
 		glViewport(0, 0, _width, _height);
+
+		_context = create_context({triangle()});
+		glfwSetWindowUserPointer(_window.get(), &_context);
+		glfwSetKeyCallback(_window.get(), key_callback);
 	}
 
 	void window::change_size(int width, int height)
@@ -67,17 +89,15 @@ namespace engine
 	void window::run()
 	{
 		spdlog::info("Run window");
-		triangle t(true);
-		t.init();
-
+		_context.triangles[0].init();
 		while(!glfwWindowShouldClose(_window.get()))
 		{
-			process_input(_window.get());
+			//process_input(_window.get(), t);
 
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			t.draw();
+			_context.triangles[0].draw();
 			glfwSwapBuffers(_window.get());
 			glfwPollEvents();
 		}

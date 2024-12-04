@@ -9,9 +9,8 @@
 class triangle
 {
 public:
-	triangle(bool is_polygon_mode = false)
+	triangle(bool polygon_mode = false) : is_polygon_mode(polygon_mode)
 	{
-		init();
 		if(is_polygon_mode)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
@@ -22,6 +21,25 @@ public:
 		glDeleteVertexArrays(1, &vertex_array_obj);
 		glDeleteBuffers(1, &vertex_buffer_obj);
 		glDeleteProgram(shader_program);
+	}
+
+	void enable_polygons()
+	{
+		if(is_polygon_mode) return;
+		is_polygon_mode = true;
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+
+	void disable_polygons()
+	{
+		if(!is_polygon_mode) return;
+		is_polygon_mode = false;
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
+	bool is_polygons()
+	{
+		return is_polygon_mode;
 	}
 
 	void init()
@@ -108,6 +126,7 @@ private:
 	unsigned int shader_program;
 	unsigned int vertex_array_obj;
 	unsigned int vertex_buffer_obj;
+	bool is_polygon_mode = false;
 	std::vector<float> vertex =
 		{ 
 			-0.5f, -0.5f, 0,
