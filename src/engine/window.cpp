@@ -1,6 +1,6 @@
 #include "window.hpp"
 
-#include <glad/glad.h>
+#include <lib/glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
 
