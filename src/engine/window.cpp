@@ -1,9 +1,8 @@
 #include "window.hpp"
 
-#include <lib/glad/glad.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
-
 #include "verticle.hpp"
 #include "events.hpp"
 
@@ -19,7 +18,7 @@ namespace engine
 	window::~window()
 	{
 		spdlog::info("Close window");
-		_context.clear();
+		_context->clear();
 		if(_window)
 		{
 			glfwTerminate();
@@ -30,17 +29,10 @@ namespace engine
 	{
 		spdlog::info("Destroy window context");
 	}
+
 	void window_context::clear()
 	{
 		spdlog::info("Clear window context");
-		triangles.clear();
-	}
-
-	window_context create_context(std::vector<triangle> triangles)
-	{
-		window_context ctx;
-		ctx.triangles = triangles;
-		return ctx;
 	}
 
 	void window::init(std::string title)
@@ -72,11 +64,8 @@ namespace engine
 			throw std::runtime_error("Failed to initialize GLAD");
 		}
 
-		glViewport(0, 0, _width, _height);
-
-		_context = create_context({triangle()});
-		glfwSetWindowUserPointer(_window.get(), &_context);
 		glfwSetKeyCallback(_window.get(), key_callback);
+		glViewport(0, 0, _width, _height);
 	}
 
 	void window::change_size(int width, int height)
@@ -88,19 +77,56 @@ namespace engine
 
 	void window::run()
 	{
+		std::vector<GLfloat> vertex = { 
+			-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower left corner
+			0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower right corner
+			0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f, // Upper corner
+			-0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner left
+			0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner right
+			0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f // Inner down
+		};
+
+		std::vector<GLuint> indices = {
+			0, 3, 5, // Lower left triangle
+			3, 2, 4, // Lower right triangle
+			5, 4, 1 // Upper triangle
+		};
+
 		spdlog::info("Run window");
-		_context.triangles[0].init();
+		
+		shader _shader(
+			"/home/dmatsiukhov/git_repos/game_engine/src/engine/shaders/content/default.vert", 
+			"/home/dmatsiukhov/git_repos/game_engine/src/engine/shaders/content/default.frag");
+
+		VAO VAO1;
+		VAO1.bind();
+		VBO VBO1(vertex);
+		EBO EBO1(indices);
+
+		VAO1.link_VBO(VBO1, 0);
+		VAO1.unbind();
+		EBO1.unbind();
+
+		GLenum error;
 		while(!glfwWindowShouldClose(_window.get()))
 		{
-			//process_input(_window.get(), t);
-
-			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			error = glGetError();
+			// Specify the color of the background
+			glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+			// Clean the back buffer and assign the new color to it
 			glClear(GL_COLOR_BUFFER_BIT);
-
-			_context.triangles[0].draw();
+			// Tell OpenGL which Shader Program we want to use
+			_shader.activate();
+			// Bind the VAO so OpenGL knows to use it
+			VAO1.bind();
+			// Draw primitives, number of indices, datatype of indices, index of indices
+			glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 			glfwSwapBuffers(_window.get());
 			glfwPollEvents();
 		}
+		if(error != GL_NO_ERROR)
+			spdlog::error("OpenGL Error: {}", error);
+
 	} 
 
 	std::shared_ptr<GLFWwindow> window::get_window() const

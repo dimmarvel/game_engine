@@ -1,14 +1,14 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include <engine/verticle.hpp>
+
 class GLFWwindow;
-class triangle;
 
 namespace engine
 {
 	struct window_context
 	{
-		std::vector<triangle> triangles;
 		~window_context();
 
 		void clear();
@@ -28,8 +28,8 @@ namespace engine
 		void init(std::string title);
 
 	private:
-		window_context _context;
 		std::shared_ptr<GLFWwindow> _window;
+		std::shared_ptr<window_context> _context;
 		int _width, _height;
 		bool _is_disable_resize = true; // TODO: window settings
 	};
