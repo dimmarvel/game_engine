@@ -77,6 +77,7 @@ namespace engine
 
 	void window::run()
 	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		std::vector<GLfloat> vertex = { 
 			-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower left corner
 			0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower right corner
@@ -94,33 +95,32 @@ namespace engine
 
 		spdlog::info("Run window");
 		
-		shader _shader(
+		std::shared_ptr<shader> _shader = std::make_shared<shader>(
 			"/home/dmatsiukhov/git_repos/game_engine/src/engine/shaders/content/default.vert", 
 			"/home/dmatsiukhov/git_repos/game_engine/src/engine/shaders/content/default.frag");
 
-		VAO VAO1;
-		VAO1.bind();
-		VBO VBO1(vertex);
-		EBO EBO1(indices);
+		triangle t(vertex, indices, _shader, false);
 
-		VAO1.link_VBO(VBO1, 0);
-		VAO1.unbind();
-		EBO1.unbind();
-
+		double lastTime = glfwGetTime();
+		int nbFrames = 0;
 		GLenum error;
 		while(!glfwWindowShouldClose(_window.get()))
 		{
+			double currentTime = glfwGetTime();
+			nbFrames++;
+			if ( currentTime - lastTime >= 1.0f )
+			{ // If last prinf() was more than 1 sec ago
+				// printf and reset timer
+				spdlog::info("FPS: {} ({} ms/frame)", nbFrames, 1000.0/double(nbFrames));
+				nbFrames = 0;
+				lastTime += 1.0;
+			}
 			error = glGetError();
 			// Specify the color of the background
 			glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 			// Clean the back buffer and assign the new color to it
 			glClear(GL_COLOR_BUFFER_BIT);
-			// Tell OpenGL which Shader Program we want to use
-			_shader.activate();
-			// Bind the VAO so OpenGL knows to use it
-			VAO1.bind();
-			// Draw primitives, number of indices, datatype of indices, index of indices
-			glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+			t.draw();
 			glfwSwapBuffers(_window.get());
 			glfwPollEvents();
 		}

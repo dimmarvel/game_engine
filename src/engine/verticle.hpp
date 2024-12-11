@@ -11,18 +11,25 @@
 #include <engine/shaders/VBO.hpp>
 #include <engine/shaders/EBO.hpp>
 
-
 class triangle
 {
 public:
-	triangle(std::shared_ptr<shader> shader_ptr, VAO& vao, VBO& vbo, EBO& ebo, bool polygon_mode = false) : 
-		_shader_program(shader_ptr),
-		_vao(vao),
-		_vbo(vbo),
-		_ebo(ebo)
+
+	triangle(std::vector<GLfloat> vertex, std::vector<GLuint> indices, std::shared_ptr<shader> shader, bool polygon_mode = false) : 
+		_vertex(vertex),
+		_indices(indices),
+		_shader_program(shader)
 	{
 		if(is_polygon_mode)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		
+		_vao = std::make_unique<VAO>();
+		_vao->bind();
+		_vbo = std::make_unique<VBO>(_vertex);
+		_ebo = std::make_unique<EBO>(_indices);
+		_vao->link_VBO((*_vbo), 0);
+		_vao->unbind();
+		_ebo->unbind();
 	}
 
 	~triangle()
@@ -49,23 +56,21 @@ public:
 		return is_polygon_mode;
 	}
 
-	void init()
-	{
-	}
-
 	void draw()
 	{
 		_shader_program->activate();
-		_vao.bind();
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		_vao->bind();
+		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 	}
 
 private:
+	std::vector<GLfloat> 	_vertex;
+	std::vector<GLuint> 	_indices;
 
 	std::shared_ptr<shader> _shader_program;
-	VAO& _vao;
-	VBO& _vbo;
-	EBO& _ebo;
+	std::unique_ptr<VAO> 	_vao;
+	std::unique_ptr<VBO> 	_vbo;
+	std::unique_ptr<EBO> 	_ebo;
+	
 	bool is_polygon_mode = false;
-
 };
