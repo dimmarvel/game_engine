@@ -12,10 +12,11 @@ VAO::~VAO()
 	remove();
 }
 
-void VAO::link_VBO(VBO& vbo, GLuint layout)
+void VAO::link_attrib(	VBO& vbo, GLuint layout, GLuint num_components, 
+						GLenum type, GLsizeiptr stride, void* offset)
 {
 	vbo.bind();
-	glVertexAttribPointer(layout, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(layout, num_components, type, GL_FALSE, stride, offset);
 	glEnableVertexAttribArray(layout);
 	vbo.unbind();
 }

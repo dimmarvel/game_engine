@@ -8,7 +8,7 @@ VBO::VBO(std::vector<GLfloat> vertices)
 	spdlog::info("Create VBO");
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(sizeof(GLfloat) * vertices.size()), vertices.data(), GL_STATIC_DRAW);
 }
 
 VBO::~VBO()

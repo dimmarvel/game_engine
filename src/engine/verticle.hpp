@@ -27,8 +27,10 @@ public:
 		_vao->bind();
 		_vbo = std::make_unique<VBO>(_vertex);
 		_ebo = std::make_unique<EBO>(_indices);
-		_vao->link_VBO((*_vbo), 0);
+		_vao->link_attrib(*_vbo, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
+		_vao->link_attrib(*_vbo, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 		_vao->unbind();
+		_vbo->unbind();
 		_ebo->unbind();
 	}
 

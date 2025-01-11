@@ -77,14 +77,15 @@ namespace engine
 
 	void window::run()
 	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		std::vector<GLfloat> vertex = { 
-			-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower left corner
-			0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower right corner
-			0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f, // Upper corner
-			-0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner left
-			0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner right
-			0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f // Inner down
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		std::vector<GLfloat> vertex = {
+			//				coordinate                    |      COLOR
+			-0.5f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,     0.8f, 0.3f,  0.02f, // Lower left corner
+			0.5f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,     0.8f, 0.3f,  0.02f, // Lower right corner
+			0.0f,  0.5f * float(sqrt(3)) * 2 / 3, 0.0f,     1.0f, 0.6f,  0.32f, // Upper corner
+			-0.25f, 0.5f * float(sqrt(3)) * 1 / 6, 0.0f,     0.9f, 0.45f, 0.17f, // Inner left
+			0.25f, 0.5f * float(sqrt(3)) * 1 / 6, 0.0f,     0.9f, 0.45f, 0.17f, // Inner right
+			0.0f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,     0.8f, 0.3f,  0.02f  // Inner down
 		};
 
 		std::vector<GLuint> indices = {
@@ -99,7 +100,7 @@ namespace engine
 			"/home/dmatsiukhov/git_repos/game_engine/src/engine/shaders/content/default.vert", 
 			"/home/dmatsiukhov/git_repos/game_engine/src/engine/shaders/content/default.frag");
 
-		triangle t(vertex, indices, _shader, false);
+		triangle t(vertex, indices, _shader, true);
 
 		double lastTime = glfwGetTime();
 		int nbFrames = 0;
@@ -124,6 +125,7 @@ namespace engine
 			glfwSwapBuffers(_window.get());
 			glfwPollEvents();
 		}
+
 		if(error != GL_NO_ERROR)
 			spdlog::error("OpenGL Error: {}", error);
 

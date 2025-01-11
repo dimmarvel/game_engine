@@ -9,7 +9,8 @@ public:
 	VAO();
 	~VAO();
 public:
-	void link_VBO(VBO& vbo, GLuint layout);
+	void link_attrib(	VBO& vbo, GLuint layout, GLuint num_components, 
+						GLenum type, GLsizeiptr stride, void* offset);
 
 	void bind();
 	void unbind();
