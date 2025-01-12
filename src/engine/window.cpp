@@ -5,6 +5,7 @@
 #include <spdlog/spdlog.h>
 #include "verticle.hpp"
 #include "events.hpp"
+#include "fps.hpp"
 
 namespace engine
 {
@@ -102,20 +103,11 @@ namespace engine
 
 		triangle t(vertex, indices, _shader, true);
 
-		double lastTime = glfwGetTime();
-		int nbFrames = 0;
+		fps timer_fps(5);
 		GLenum error;
 		while(!glfwWindowShouldClose(_window.get()))
 		{
-			double currentTime = glfwGetTime();
-			nbFrames++;
-			if ( currentTime - lastTime >= 1.0f )
-			{ // If last prinf() was more than 1 sec ago
-				// printf and reset timer
-				spdlog::info("FPS: {} ({} ms/frame)", nbFrames, 1000.0/double(nbFrames));
-				nbFrames = 0;
-				lastTime += 1.0;
-			}
+			timer_fps.frame();
 			error = glGetError();
 			// Specify the color of the background
 			glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
