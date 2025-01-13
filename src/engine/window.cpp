@@ -6,6 +6,7 @@
 #include "verticle.hpp"
 #include "events.hpp"
 #include "fps.hpp"
+#include "utils.hpp"
 
 namespace engine
 {
@@ -79,21 +80,6 @@ namespace engine
 	void window::run()
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		std::vector<GLfloat> vertex = {
-			//				coordinate                    |      COLOR
-			-0.5f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,     0.8f, 0.3f,  0.02f, // Lower left corner
-			0.5f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,     0.8f, 0.3f,  0.02f, // Lower right corner
-			0.0f,  0.5f * float(sqrt(3)) * 2 / 3, 0.0f,     1.0f, 0.6f,  0.32f, // Upper corner
-			-0.25f, 0.5f * float(sqrt(3)) * 1 / 6, 0.0f,     0.9f, 0.45f, 0.17f, // Inner left
-			0.25f, 0.5f * float(sqrt(3)) * 1 / 6, 0.0f,     0.9f, 0.45f, 0.17f, // Inner right
-			0.0f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,     0.8f, 0.3f,  0.02f  // Inner down
-		};
-
-		std::vector<GLuint> indices = {
-			0, 3, 5, // Lower left triangle
-			3, 2, 4, // Lower right triangle
-			5, 4, 1 // Upper triangle
-		};
 
 		spdlog::info("Run window");
 		
@@ -101,7 +87,7 @@ namespace engine
 			"/home/dmatsiukhov/git_repos/game_engine/src/engine/shaders/content/default.vert", 
 			"/home/dmatsiukhov/git_repos/game_engine/src/engine/shaders/content/default.frag");
 
-		triangle t(vertex, indices, _shader, true);
+		triangle t = create_test_triangle(_shader);
 
 		fps timer_fps(5);
 		GLenum error;

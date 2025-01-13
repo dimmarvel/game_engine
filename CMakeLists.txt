@@ -14,6 +14,7 @@ add_executable(${PROJECT_NAME}
 	src/lib/glad.c 
 	src/engine/window.cpp 
 	src/engine/window.hpp
+	src/engine/utils.hpp
 	src/engine/shaders/shader.hpp
 	src/engine/shaders/shader.cpp
 	src/engine/shaders/VBO.cpp

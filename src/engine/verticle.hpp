@@ -1,10 +1,10 @@
 #pragma once
 
 #include <vector>
-#include "window.hpp"
-#include "utils.hpp"
-#include "api.hpp"
 #include <spdlog/spdlog.h>
+
+#include "window.hpp"
+#include "api.hpp"
 
 #include <engine/shaders/shader.hpp>
 #include <engine/shaders/VAO.hpp>
@@ -20,6 +20,16 @@ public:
 		_indices(indices),
 		_shader_program(shader)
 	{
+		setup();
+	}
+
+	~triangle()
+	{
+		spdlog::info("Destroy triangle");
+	}
+	
+	void setup()
+	{
 		if(is_polygon_mode)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		
@@ -32,11 +42,6 @@ public:
 		_vao->unbind();
 		_vbo->unbind();
 		_ebo->unbind();
-	}
-
-	~triangle()
-	{
-		spdlog::info("Destroy triangle");
 	}
 
 	void enable_polygons()
