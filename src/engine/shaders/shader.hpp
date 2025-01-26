@@ -16,6 +16,7 @@ public:
 
 	void activate();
 	void remove();
+	GLuint get_ID() { return ID; }
 
 private:
 	GLuint ID;

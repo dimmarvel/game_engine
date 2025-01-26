@@ -65,7 +65,6 @@ public:
 
 	void draw()
 	{
-		_shader_program->activate();
 		_vao->bind();
 		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 	}

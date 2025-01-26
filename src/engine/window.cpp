@@ -88,17 +88,23 @@ namespace engine
 			"/home/dmatsiukhov/git_repos/game_engine/src/engine/shaders/content/default.frag");
 
 		triangle t = create_test_triangle(_shader);
-
+		GLuint uniformID = glGetUniformLocation(_shader->get_ID(), "scale");
 		fps timer_fps(5);
 		GLenum error;
+		GLfloat scale = 0.0f;
 		while(!glfwWindowShouldClose(_window.get()))
 		{
 			timer_fps.frame();
+			scale += 0.001f;
+			if(scale > 1.2f)
+				scale = 0.0f;
 			error = glGetError();
 			// Specify the color of the background
 			glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 			// Clean the back buffer and assign the new color to it
 			glClear(GL_COLOR_BUFFER_BIT);
+			_shader->activate();
+			glUniform1f(uniformID, scale);
 			t.draw();
 			glfwSwapBuffers(_window.get());
 			glfwPollEvents();
